@@ -1,0 +1,8 @@
+node_modules
+dist
+.npmignor
+.gitignore
+package-lock.json
+webpack.base.js
+webpack.dev.js
+webpack.prod.js
