@@ -12,7 +12,7 @@ import { timeFormat, downFlie } from "./utils";
 export function isSupportedDB() {
   return idbIsSupported()
 }
-var db;
+
 export function InitDb(dbConfig) {
   dbConfig = dbConfig || {};
   dbConfig.dbName = dbConfig.dbName;
@@ -29,7 +29,7 @@ export function InitDb(dbConfig) {
     console.log('表名为空');
     return;
   }
-  db = new CustomDB({
+  this.db = new CustomDB({
     dbName: dbConfig.dbName,
     dbVersion: dbConfig.dbVersion,
     itemDuration: dbConfig.duration,
@@ -51,12 +51,12 @@ export function InitDb(dbConfig) {
  * @param { content } 写入内容
  */
 // 写入日志
-InitDb.prototype.log = function log(content) {
-  db.addItems([{
+InitDb.prototype.log = async function log(content) {
+  let r1 = await this.db.addItems([{
     tableName: this.dbConfig.tableName,
     item: {
       logCreateTime: timeFormat(new Date()),
-      logString: content + '\n'
+      logString: content
     }
   }])
 }
@@ -65,8 +65,8 @@ InitDb.prototype.log = function log(content) {
  * @param { starTime } 要取日志的开始时间 单位是ms
  * @param { endTime } 要取日志的结束时间 单位是ms
  */
-InitDb.prototype.downloadLog = function downloadLog(starTime, endTime) {
-  db.getItemsInRange({
+InitDb.prototype.downloadLog = async function downloadLog(starTime, endTime) {
+  await this.db.getItemsInRange({
     tableName: this.dbConfig.tableName,
     indexRange: {
       indexName: 'updateTime',
@@ -76,15 +76,19 @@ InitDb.prototype.downloadLog = function downloadLog(starTime, endTime) {
       lowerExclusive: true
     }
   }).then(res => {
-    downFlie(res);
+    var str = '';
+    res.forEach(el => {
+      str += `【${el.logCreateTime}】 ${JSON.stringify(el.logString)}\n`;
+    });
+    downFlie(str);
   })
 }
-InitDb.prototype.delDB = function delDB(dbName) {
-  deleteDB(dbName);
+InitDb.prototype.delDB = async function delDB(dbName) {
+  await deleteDB(dbName);
 }
 
-export function delDB(dbName) {
-  deleteDB(dbName);
+export async function delDB(dbName) {
+  await deleteDB(dbName);
 }
 export default {
   isSupportedDB: isSupportedDB,

@@ -2,6 +2,7 @@ node_modules
 dist
 .npmignor
 .gitignore
+index.html
 package-lock.json
 webpack.base.js
 webpack.dev.js

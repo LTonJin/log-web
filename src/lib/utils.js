@@ -9,7 +9,11 @@ export function timeFormat(date) {
   var Y = date.getFullYear();
   var M = date.getMonth() + 1;
   var D = date.getDate();
-  return Y + '-' + (M < 10 ? '0' + M : M) + '-' + (D < 10 ? '0' + D : D);
+  var H = date.getHours();
+  var m = date.getMinutes();
+  var s = date.getSeconds();
+
+  return Y + '-' + (M < 10 ? '0' + M : M) + '-' + (D < 10 ? '0' + D : D) + ' ' + H + ':' + m + ':' + s;
 }
 export function downFlie(data) {
   // 创建a标签
@@ -20,7 +24,7 @@ export function downFlie(data) {
   elementA.style.display = 'none';
 
   //生成一个blob二进制数据，内容为json数据
-  var blob = new Blob([JSON.stringify(data)]);
+  var blob = new Blob([data]);
 
   //生成一个指向blob的URL地址，并赋值给a标签的href属性
   elementA.href = URL.createObjectURL(blob);

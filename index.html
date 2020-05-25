@@ -6,6 +6,24 @@
   <title>dmeo</title>
 </head>
 <body>
-  
+  <button onclick="log()">writeLog</button>
+  <button onclick="down()">downloadLog</button>
+  <button onclick="deleteDB()">deleteDB</button>
 </body>
+<script>
+  var dbConfig = {
+      dbName: 'LOG_IDB_MANAGER_DB',
+      tableName: 'log_detail_table',
+    };
+  var logan = new InitDB(dbConfig);
+  function log() {
+    logan.log('hello world');
+  }
+  function down() {
+    logan.downloadLog(Number(new Date(), new Date() - 24 * 1000 * 3600));
+  }
+  function deleteDB() {
+    logan.delDB(dbConfig.dbName);
+  }
+</script>
 </html>
