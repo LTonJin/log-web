@@ -128,15 +128,15 @@ WebLog.prototype.downloadLog = async function downloadLog(starTime, endTime) {
     console.log('IndexedDB is supported: false');
     return;
   }
-  var starTime = starTime || new Date();
-  var endTime = endTime || new Date() - sevenDay;
+  var starTime = starTime || new Date() - sevenDay;
+  var endTime = endTime || new Date();
   await this.db.getItemsInRange({
     tableName: 'log_detail_table',
     indexRange: {
       indexName: 'updateTime',
-      upperIndex: starTime,
+      upperIndex: endTime,
       upperExclusive: true,
-      lowerIndex: endTime,
+      lowerIndex: starTime,
       lowerExclusive: true
     }
   }).then(res => {

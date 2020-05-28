@@ -12,11 +12,11 @@ logan.log('Hello World')
 // 下载日志
 // db.downloadLog();
 ```
-| 方法                             | 说明                |  类型  |                   参数                   |     默认     |
-| -------------------------------- | ------------------- | :----: | :--------------------------------------: | :----------: |
-| log('content')                   | 写入日志类型为log   | String |                 写入内容                 |      _       |
-| info('content')                  | 写入日志类型为info  | String |                 写入内容                 |      _       |
-| warn('content')                  | 写入日志类型为warn  | String |                 写入内容                 |      _       |
-| error('content')                 | 写入日志类型为error | String |                 写入内容                 |      _       |
-| downloadLog( startTime, endTime) | 下载日志            | Number | 开始时间，和结束时间，传入为时间戳单位ms | 下载全部日志 |
-| deleteLog()                      | 删去全部日志        |   -    |                    _                     |      _       |
+| 方法          | 说明                |  类型  | 参数                                     |                    默认                     |
+| ------------- | ------------------- | :----: | :--------------------------------------- | :-----------------------------------------: |
+| log()         | 写入日志类型为log   | String | ('content')                              |                      _                      |
+| info()        | 写入日志类型为info  | String | ('content')                              |                      _                      |
+| warn()        | 写入日志类型为warn  | String | ('content')                              |                      _                      |
+| error()       | 写入日志类型为error | String | ('content')                              |                      _                      |
+| downloadLog() | 下载日志            | Number | (startTime?, endTime?)传入为时间戳单位ms | startTime默认为7天前，endTime默认为当前时间 |
+| deleteLog()   | 删去全部日志        |   -    | _                                        |                      _                      |
