@@ -21,7 +21,7 @@ module.exports = {
     //输出文件的绝对路径
     path: path.resolve(__dirname, 'dist'),
     libraryExport: "default",
-    library: "InitDB",
+    library: "Weblog",
     libraryTarget: "umd"
   },
   plugins: [

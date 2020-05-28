@@ -1,4 +1,4 @@
-import { InitDb } from "./lib/idbmanager";
+import WebLoG  from "./lib/idbmanager";
 
-export var InitDB = InitDb;
-export default InitDb;
+export var WebLog = WebLoG;
+export default WebLoG;

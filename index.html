@@ -1,29 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>dmeo</title>
 </head>
+
 <body>
   <button onclick="log()">writeLog</button>
+  <button onclick="info()">writeLog</button>
+  <button onclick="warn()">writeLog</button>
+  <button onclick="error()">writeLog</button>
   <button onclick="down()">downloadLog</button>
   <button onclick="deleteDB()">deleteDB</button>
 </body>
 <script>
-  var dbConfig = {
-      dbName: 'LOG_IDB_MANAGER_DB',
-      tableName: 'log_detail_table',
-    };
-  var logan = new InitDB(dbConfig);
+
+  var logan = new Weblog('123456');
   function log() {
-    logan.log('hello world');
+    logan.log('hello world log');
+  }
+  function info() {
+    logan.info('hello world info');
+  }
+  function warn() {
+    logan.warn('hello world warn');
+  }
+  function error() {
+    logan.error('hello world error');
   }
   function down() {
-    logan.downloadLog(Number(new Date(), new Date() - 24 * 1000 * 3600));
+    logan.downloadLog();
   }
   function deleteDB() {
-    logan.delDB(dbConfig.dbName);
+    logan.deleteLog();
   }
 </script>
+
 </html>

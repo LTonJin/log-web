@@ -12,8 +12,9 @@ export function timeFormat(date) {
   var H = date.getHours();
   var m = date.getMinutes();
   var s = date.getSeconds();
+  var ms = date.getTime();
 
-  return Y + '-' + (M < 10 ? '0' + M : M) + '-' + (D < 10 ? '0' + D : D) + ' ' + H + ':' + m + ':' + s;
+  return Y + '-' + (M < 10 ? '0' + M : M) + '-' + (D < 10 ? '0' + D : D) + ' ' + H + ':' + m + ':' + s + ':' + (ms).toString().slice(-3);
 }
 export function downFlie(data) {
   // 创建a标签

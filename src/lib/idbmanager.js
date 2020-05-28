@@ -13,49 +13,107 @@ export function isSupportedDB() {
   return idbIsSupported()
 }
 
-export function InitDb(dbConfig) {
-  dbConfig = dbConfig || {};
-  dbConfig.dbName = dbConfig.dbName;
-  dbConfig.dbVersion = dbConfig.dbVersion || 1;
-  dbConfig.duration = dbConfig.duration || 7 * 24 * 1000 * 3600; // 7天
-  dbConfig.tableName = dbConfig.tableName; // 7天
-  this.dbConfig = dbConfig;
-
+/**
+ * 
+ * @param {*String} appid 项目标识符
+ */
+var sevenDay = 7 * 24 * 1000 * 3600; // ms
+export function WebLog(appid) {
   if (!idbIsSupported()) {
     console.log('IndexedDB is supported: false');
     return;
   }
-  if (!dbConfig.tableName) {
-    console.log('表名为空');
-    return;
-  }
+  this.appid = appid;
   this.db = new CustomDB({
-    dbName: dbConfig.dbName,
-    dbVersion: dbConfig.dbVersion,
-    itemDuration: dbConfig.duration,
+    dbName: appid,
+    dbVersion: 1,
+    itemDuration: sevenDay,
     tables: {
-      [dbConfig.tableName]: {
+      'log_detail_table': {
         indexList: [{
           indexName: 'logCreateTime',
           unique: false
         }, {
           indexName: 'logString',
           unique: false
+        }, {
+          indexName: 'type',
+          unique: false
         }],
-        itemDuration: dbConfig.duration
+        itemDuration: sevenDay
       }
     }
   });
 }
+
 /**
  * @param { content } 写入内容
  */
 // 写入日志
-InitDb.prototype.log = async function log(content) {
-  let r1 = await this.db.addItems([{
-    tableName: this.dbConfig.tableName,
+WebLog.prototype.log = async function (content) {
+  if (!this.db) {
+    console.log('IndexedDB is supported: false');
+    return;
+  }
+  if (!content) {
+    return;
+  }
+  await this.db.addItems([{
+    tableName: 'log_detail_table',
     item: {
       logCreateTime: timeFormat(new Date()),
+      type: 'log',
+      logString: content
+    }
+  }])
+}
+WebLog.prototype.info = async function (content) {
+  if (!this.db) {
+    console.log('IndexedDB is supported: false');
+    return;
+  }
+  if (!content) {
+    return;
+  }
+  await this.db.addItems([{
+    tableName: 'log_detail_table',
+    item: {
+      logCreateTime: timeFormat(new Date()),
+      type: 'info',
+      logString: content
+    }
+  }])
+}
+WebLog.prototype.warn = async function (content) {
+  if (!this.db) {
+    console.log('IndexedDB is supported: false');
+    return;
+  }
+  if (!content) {
+    return;
+  }
+  await this.db.addItems([{
+    tableName: 'log_detail_table',
+    item: {
+      logCreateTime: timeFormat(new Date()),
+      type: 'warn',
+      logString: content
+    }
+  }])
+}
+WebLog.prototype.error = async function (content) {
+  if (!this.db) {
+    console.log('IndexedDB is supported: false');
+    return;
+  }
+  if (!content) {
+    return;
+  }
+  await this.db.addItems([{
+    tableName: 'log_detail_table',
+    item: {
+      logCreateTime: timeFormat(new Date()),
+      type: 'error',
       logString: content
     }
   }])
@@ -65,9 +123,15 @@ InitDb.prototype.log = async function log(content) {
  * @param { starTime } 要取日志的开始时间 单位是ms
  * @param { endTime } 要取日志的结束时间 单位是ms
  */
-InitDb.prototype.downloadLog = async function downloadLog(starTime, endTime) {
+WebLog.prototype.downloadLog = async function downloadLog(starTime, endTime) {
+  if (!this.db) {
+    console.log('IndexedDB is supported: false');
+    return;
+  }
+  var starTime = starTime || new Date();
+  var endTime = endTime || new Date() - sevenDay;
   await this.db.getItemsInRange({
-    tableName: this.dbConfig.tableName,
+    tableName: 'log_detail_table',
     indexRange: {
       indexName: 'updateTime',
       upperIndex: starTime,
@@ -78,20 +142,17 @@ InitDb.prototype.downloadLog = async function downloadLog(starTime, endTime) {
   }).then(res => {
     var str = '';
     res.forEach(el => {
-      str += `【${el.logCreateTime}】 ${JSON.stringify(el.logString)}\n`;
+      str += `【${el.logCreateTime}】 ${el.type}日志 ${JSON.stringify(el.logString)}\n`;
     });
     downFlie(str);
   })
 }
-InitDb.prototype.delDB = async function delDB(dbName) {
-  await deleteDB(dbName);
+WebLog.prototype.deleteLog = async function deleteLog() {
+  if (!this.db) {
+    console.log('IndexedDB is supported: false');
+    return;
+  }
+  await deleteDB(this.appid);
 }
 
-export async function delDB(dbName) {
-  await deleteDB(dbName);
-}
-export default {
-  isSupportedDB: isSupportedDB,
-  InitDb: InitDb,
-  delDB: delDB,
-};
+export default WebLog;
