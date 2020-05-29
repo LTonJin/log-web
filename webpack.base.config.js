@@ -11,7 +11,7 @@ module.exports = {
   // mode: 'production',
   //打包项目的入口文件
   entry: {
-    main: './src/main.js',
+    weblog: './src/main.js',
   },
   //打包项目的输出文件
   output: {

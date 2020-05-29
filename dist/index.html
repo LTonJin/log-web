@@ -1,0 +1,19 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>dmeo</title></head><body><button onclick="log()">writeLog</button> <button onclick="info()">writeInfo</button> <button onclick="warn()">writeWarn</button> <button onclick="error()">writeError</button> <button onclick="down()">downloadLog</button> <button onclick="deleteDB()">deleteDB</button><script src="./js/weblog.cb10332816d019f973f7.js"></script></body><script>var logan = new Weblog('123456');
+  function log() {
+    logan.log('hello world log');
+  }
+  function info() {
+    logan.info({info:'hello world info'});
+  }
+  function warn() {
+    logan.warn([1,23,4,5]);
+  }
+  function error() {
+    logan.error('hello world error');
+  }
+  function down() {
+    logan.downloadLog();
+  }
+  function deleteDB() {
+    logan.deleteLog();
+  }</script></html>
