@@ -5,7 +5,8 @@ import {
 } from 'idb-managed';
 import {
   timeFormat,
-  downFlie
+  downFlie,
+  splitStr
 } from "./utils";
 /**
  * 
@@ -109,13 +110,13 @@ WebLog.prototype.downloadLog = async function downloadLog(starTime, endTime) {
     }
   }).then(res => {
     var str = '';
+    var strArr = [];
     res.forEach(el => {
       str += `【${el.logCreateTime}】 ${el.type}日志  <--->  ${el.logString}\n`;
-      if (str.length >= strLength) { // 如果字符串过长分多个文件下载
-        downFlie(str.slice(0, strLength));
-        str = str.slice(strLength);
-      }
     });
+    splitStr(str, strLength).forEach( item => {
+      downFlie( item );
+    })
 
   })
 }

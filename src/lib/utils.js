@@ -33,7 +33,15 @@ export function downFlie(data) {
   elementA.click();
   document.body.removeChild(elementA);
 }
+export function splitStr(str, strLength) {
+  var arr = [];
+  for (let i = 0; i < str.length / strLength; i++) {
+    arr.push(str.slice(i * strLength, strLength * (i + 1) ));
+  }
+  return arr;
+}
 export default {
   timeFormat: timeFormat,
   downFlie: downFlie,
+  splitStr: splitStr,
 }
