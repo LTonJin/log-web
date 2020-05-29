@@ -21,6 +21,7 @@ export function isSupportedDB() {
  * @param {*String} appid 项目标识符
  */
 var sevenDay = 7 * 24 * 1000 * 3600; // ms
+var strLength = 2000000;
 export function WebLog(appid) {
   if (!idbIsSupported()) {
     console.log('IndexedDB is supported: false');
@@ -110,8 +111,12 @@ WebLog.prototype.downloadLog = async function downloadLog(starTime, endTime) {
     var str = '';
     res.forEach(el => {
       str += `【${el.logCreateTime}】 ${el.type}日志  <--->  ${el.logString}\n`;
+      if (str.length >= strLength) { // 如果字符串过长分多个文件下载
+        downFlie(str.slice(0, strLength));
+        str = str.slice(strLength);
+      }
     });
-    downFlie(str);
+
   })
 }
 WebLog.prototype.deleteLog = async function deleteLog() {
