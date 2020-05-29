@@ -3,7 +3,10 @@ import {
   CustomDB,
   deleteDB
 } from 'idb-managed';
-import { timeFormat, downFlie } from "./utils";
+import {
+  timeFormat,
+  downFlie
+} from "./utils";
 /**
  * 
  * @param {*dbName 数据库名称[可选] *dbVersion 数据库版本[可选] *duration 数据库有效期[可选] } dbConfig
@@ -23,9 +26,10 @@ export function WebLog(appid) {
     console.log('IndexedDB is supported: false');
     return;
   }
-  this.appid = appid;
+  var appID = 'BUTEL_LOG_' + appid;
+  this.appid = appID;
   this.db = new CustomDB({
-    dbName: appid,
+    dbName: appID,
     dbVersion: 1,
     itemDuration: sevenDay,
     tables: {
@@ -47,76 +51,39 @@ export function WebLog(appid) {
 }
 
 /**
- * @param { content } 写入内容
+ * @param { any } args 写入内容
  */
+async function _writeLog(args, type) {
+  var argsArr = Array.prototype.slice.call(args, 0)
+  if (!this.db) {
+    console.log('IndexedDB is supported: false');
+    return;
+  }
+  var message = '';
+  for (let msg of argsArr) {
+    message += typeof msg === 'object' ? JSON.stringify(msg) : msg;
+  }
+  await this.db.addItems([{
+    tableName: 'log_detail_table',
+    item: {
+      logCreateTime: timeFormat(new Date()),
+      type: type,
+      logString: message
+    }
+  }])
+}
 // 写入日志
-WebLog.prototype.log = async function (content) {
-  if (!this.db) {
-    console.log('IndexedDB is supported: false');
-    return;
-  }
-  if (!content) {
-    return;
-  }
-  await this.db.addItems([{
-    tableName: 'log_detail_table',
-    item: {
-      logCreateTime: timeFormat(new Date()),
-      type: 'log',
-      logString: content
-    }
-  }])
+WebLog.prototype.log = async function () {
+  await _writeLog.call(this, arguments, 'log');
 }
-WebLog.prototype.info = async function (content) {
-  if (!this.db) {
-    console.log('IndexedDB is supported: false');
-    return;
-  }
-  if (!content) {
-    return;
-  }
-  await this.db.addItems([{
-    tableName: 'log_detail_table',
-    item: {
-      logCreateTime: timeFormat(new Date()),
-      type: 'info',
-      logString: content
-    }
-  }])
+WebLog.prototype.info = async function () {
+  await _writeLog.call(this, arguments, 'info');
 }
-WebLog.prototype.warn = async function (content) {
-  if (!this.db) {
-    console.log('IndexedDB is supported: false');
-    return;
-  }
-  if (!content) {
-    return;
-  }
-  await this.db.addItems([{
-    tableName: 'log_detail_table',
-    item: {
-      logCreateTime: timeFormat(new Date()),
-      type: 'warn',
-      logString: content
-    }
-  }])
+WebLog.prototype.warn = async function () {
+  await _writeLog.call(this, arguments, 'warn');
 }
-WebLog.prototype.error = async function (content) {
-  if (!this.db) {
-    console.log('IndexedDB is supported: false');
-    return;
-  }
-  if (!content) {
-    return;
-  }
-  await this.db.addItems([{
-    tableName: 'log_detail_table',
-    item: {
-      logCreateTime: timeFormat(new Date()),
-      type: 'error',
-      logString: content
-    }
-  }])
+WebLog.prototype.error = async function () {
+  await _writeLog.call(this, arguments, 'error');
 }
 // 将日志下载到本地存为txt文件
 /**
@@ -142,7 +109,7 @@ WebLog.prototype.downloadLog = async function downloadLog(starTime, endTime) {
   }).then(res => {
     var str = '';
     res.forEach(el => {
-      str += `【${el.logCreateTime}】 ${el.type}日志 ${JSON.stringify(el.logString)}\n`;
+      str += `【${el.logCreateTime}】 ${el.type}日志  <--->  ${el.logString}\n`;
     });
     downFlie(str);
   })
